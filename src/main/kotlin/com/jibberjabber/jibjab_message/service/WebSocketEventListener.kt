@@ -2,8 +2,8 @@ package com.jibberjabber.jibjab_message.service
 
 import com.jibberjabber.jibjab_message.domain.ChatMessage
 import com.jibberjabber.jibjab_message.domain.MessageType
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.simp.SimpMessageSendingOperations
@@ -12,10 +12,14 @@ import org.springframework.stereotype.Component
 import org.springframework.web.socket.messaging.SessionConnectedEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
 
+
 @Component
 class WebSocketEventListener @Autowired constructor(
     private val messagingTemplate: SimpMessageSendingOperations
 ) {
+
+    protected val logger: Log = LogFactory.getLog(javaClass)
+
     @EventListener
     fun handleWebSocketConnectListener(event: SessionConnectedEvent?) {
         logger.info("Received a new web socket connection")
@@ -40,9 +44,5 @@ class WebSocketEventListener @Autowired constructor(
             chatMessage.sender = privateUsername
             messagingTemplate.convertAndSend("/queue/reply", chatMessage)
         }
-    }
-
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(WebSocketEventListener::class.java)
     }
 }
