@@ -1,8 +1,8 @@
-package com.jibberjabber.jibjab_posts.utils
+package com.jibberjabber.jibjab_message.utils
 
 import com.jibberjabber.jibjab_message.config.AuthEntryPoint
 import com.jibberjabber.jibjab_message.dto.UserInfoDto
-import com.jibberjabber.jibjab_posts.exception.BadRequestException
+import com.jibberjabber.jibjab_message.exception.BadRequestException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

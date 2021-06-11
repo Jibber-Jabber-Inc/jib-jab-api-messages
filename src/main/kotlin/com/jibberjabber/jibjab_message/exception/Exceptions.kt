@@ -1,4 +1,4 @@
-package com.jibberjabber.jibjab_posts.exception
+package com.jibberjabber.jibjab_message.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
