@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletResponse
 class AuthTokenFilter : OncePerRequestFilter() {
 
     @Value("\${AUTH_HOST}")
-    private val authHost: String? = "localhost"
+    private val authHost: String = "localhost"
 
     @Value("\${AUTH_PORT}")
-    private val authPort: String? = "8080"
+    private val authPort: String = "8080"
 
     override fun doFilterInternal(
         request: HttpServletRequest,
