@@ -1,0 +1,24 @@
+server:
+  error:
+    include-message: always
+  servlet:
+    context-path: /api/message
+  port: 8082
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+    show-sql: true
+    generate-ddl: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5436/postgres
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+
+AUTH_PORT: 8080
+AUTH_HOST: localhost
