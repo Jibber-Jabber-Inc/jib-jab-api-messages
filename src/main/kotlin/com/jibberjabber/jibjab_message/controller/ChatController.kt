@@ -24,9 +24,15 @@ class ChatController @Autowired constructor(
 ) {
 
     @MessageMapping("/chat")
-    fun processMessage(@Payload messageDto: CreationChatMessageDto) {
+    fun processMessage(@Payload messageDto: ChatMessage) {
         val chatId = chatRoomService.getChatId(messageDto.senderId, messageDto.recipientId, true)
-        val saved: ChatMessage = chatMessageService.save(messageDto, chatId)
+        val saved: ChatMessage = chatMessageService.save(
+            CreationChatMessageDto(
+                messageDto.senderId,
+                messageDto.recipientId,
+                messageDto.content
+            ), chatId
+        )
         messagingTemplate.convertAndSendToUser(messageDto.recipientId, "/queue/messages", saved)
         messagingTemplate.convertAndSendToUser(messageDto.senderId, "/queue/messages", saved)
     }
