@@ -3,17 +3,12 @@ package com.jibberjabber.jibjab_message.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-
-
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 
 
@@ -41,17 +36,38 @@ class WebSecurityConfig
     }
 }
 
+//
+//@Configuration
+//class WebMvcConfig : WebMvcConfigurer {
+//    override fun addCorsMappings(registry: CorsRegistry) {
+//        registry.addMapping("/**")
+//            .allowedOrigins("*")
+//            .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
+//            .maxAge(MAX_AGE_SECS)
+//    }
+//
+//    companion object {
+//        private const val MAX_AGE_SECS: Long = 3600
+//    }
+//}
 
 @Configuration
-class WebMvcConfig : WebMvcConfigurer {
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
-            .maxAge(MAX_AGE_SECS)
-    }
-
-    companion object {
-        private const val MAX_AGE_SECS: Long = 3600
+class SecurityConfig {
+    @Bean
+    fun corsFilter(): CorsFilter {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin("http://localhost:3000")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("OPTIONS")
+        config.addAllowedMethod("HEAD")
+        config.addAllowedMethod("GET")
+        config.addAllowedMethod("PUT")
+        config.addAllowedMethod("POST")
+        config.addAllowedMethod("DELETE")
+        config.addAllowedMethod("PATCH")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
     }
 }
