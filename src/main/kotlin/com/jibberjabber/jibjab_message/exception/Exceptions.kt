@@ -8,3 +8,6 @@ class BadRequestException(message: String) : RuntimeException(message)
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class NotFoundException(message: String?) : RuntimeException(message)
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class ResourceNotFoundException(message: String?) : RuntimeException(message)
