@@ -11,11 +11,15 @@ class ChatRoomService @Autowired constructor(
 ) {
     fun getChatId(senderId: String, recipientId: String, createIfNotExist: Boolean): String? {
         return chatRoomRepository.findBySenderIdAndRecipientId(senderId, recipientId).map(ChatRoom::chatId).orElseGet {
-            if (!createIfNotExist) return@orElseGet null
-            val chatId = String.format("%s_%s", senderId, recipientId)
-            chatRoomRepository.save(ChatRoom(chatId, senderId, recipientId)) //senderRecipient
-            chatRoomRepository.save(ChatRoom(chatId, recipientId, senderId)) //recipientSender
-            return@orElseGet chatId
+            when (createIfNotExist) {
+                true -> {
+                    val chatId = String.format("%s_%s", senderId, recipientId)
+                    chatRoomRepository.save(ChatRoom(chatId, senderId, recipientId)) //senderRecipient
+                    chatRoomRepository.save(ChatRoom(chatId, recipientId, senderId)) //recipientSender
+                    chatId
+                }
+                else -> null
+            }
         }
     }
 }

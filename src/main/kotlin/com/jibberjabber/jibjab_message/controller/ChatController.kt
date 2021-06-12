@@ -1,8 +1,10 @@
 package com.jibberjabber.jibjab_message.controller
 
 import com.jibberjabber.jibjab_message.domain.ChatMessage
+import com.jibberjabber.jibjab_message.dto.CreationChatMessageDto
 import com.jibberjabber.jibjab_message.service.ChatMessageService
 import com.jibberjabber.jibjab_message.service.ChatRoomService
+import com.jibberjabber.jibjab_message.utils.SessionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -17,30 +19,33 @@ import org.springframework.web.bind.annotation.PathVariable
 class ChatController @Autowired constructor(
     val messagingTemplate: SimpMessagingTemplate,
     val chatMessageService: ChatMessageService,
-    val chatRoomService: ChatRoomService
+    val chatRoomService: ChatRoomService,
+    val sessionUtils: SessionUtils
 ) {
 
     @MessageMapping("/chat")
-    fun processMessage(@Payload chatMessage: ChatMessage) {
-        val chatId = chatRoomService.getChatId(chatMessage.senderId!!, chatMessage.recipientId!!, true)
-        chatMessage.chatId = chatId
-        val saved: ChatMessage = chatMessageService.save(chatMessage)
-        messagingTemplate.convertAndSendToUser(chatMessage.recipientId!!, "/queue/messages", saved)
+    fun processMessage(@Payload messageDto: CreationChatMessageDto) {
+        val chatId = chatRoomService.getChatId(messageDto.senderId, messageDto.recipientId, true)
+        val saved: ChatMessage = chatMessageService.save(messageDto, chatId)
+        messagingTemplate.convertAndSendToUser(messageDto.recipientId, "/queue/messages", saved)
+        messagingTemplate.convertAndSendToUser(messageDto.senderId, "/queue/messages", saved)
     }
 
-    @GetMapping("/messages/{senderId}/{recipientId}/count")
-    fun countNewMessages(@PathVariable senderId: String, @PathVariable recipientId: String): ResponseEntity<Long> {
-        return ResponseEntity.ok(chatMessageService.countNewMessages(senderId, recipientId))
+    @GetMapping("/messages/{userId}/count")
+    fun countNewMessages(@PathVariable userId: String): ResponseEntity<Long> {
+        val user = sessionUtils.getTokenUserInformation()
+        return ResponseEntity.ok(chatMessageService.countNewMessages(userId, user.id))
     }
 
-    @GetMapping("/messages/{senderId}/{recipientId}")
-    fun findChatMessages(@PathVariable senderId: String, @PathVariable recipientId: String): ResponseEntity<*> {
-        return ResponseEntity.ok(chatMessageService.findChatMessages(senderId, recipientId))
+    @GetMapping("/messages/{userId}")
+    fun findChatMessages(@PathVariable userId: String): ResponseEntity<*> {
+        val user = sessionUtils.getTokenUserInformation()
+        return ResponseEntity.ok(chatMessageService.findChatMessages(userId, user.id))
     }
 
-    @GetMapping("/messages/{id}")
-    fun findMessage(@PathVariable id: String): ResponseEntity<*> {
-        return ResponseEntity.ok(chatMessageService.findById(id))
-    }
+//    @GetMapping("/messages/{id}")
+//    fun findMessage(@PathVariable id: String): ResponseEntity<*> {
+//        return ResponseEntity.ok(chatMessageService.findById(id))
+//    }
 
 }

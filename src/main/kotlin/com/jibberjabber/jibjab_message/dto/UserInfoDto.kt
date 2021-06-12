@@ -8,3 +8,9 @@ data class UserInfoDto(
     var lastName: String,
     var role: String?
 )
+
+data class CreationChatMessageDto(
+    var senderId: String,
+    var recipientId: String,
+    var content: String,
+)

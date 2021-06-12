@@ -1,7 +1,11 @@
 package com.jibberjabber.jibjab_message.domain
 
+import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Table
 
 @Entity
@@ -15,14 +19,14 @@ class ChatRoom(
 @Entity
 @Table(name = "chat_message")
 class ChatMessage(
-    var chatId: String? = null,
-    var senderId: String? = null,
-    var recipientId: String? = null,
-    var senderName: String? = null,
-    var recipientName: String? = null,
-    var content: String? = null,
-    var timestamp: Date? = null,
-    var status: MessageStatus? = null
+    var chatId: String,
+    var senderId: String,
+    var recipientId: String,
+    var content: String,
+    @CreationTimestamp
+    var timestamp: LocalDateTime,
+    @Enumerated(value = EnumType.STRING)
+    var status: MessageStatus
 ) : AbstractEntity()
 
 //@Entity
@@ -33,5 +37,5 @@ class ChatMessage(
 //) : AbstractEntity()
 
 enum class MessageStatus {
-    RECEIVED, DELIVERED
+    RECEIVED, READ
 }

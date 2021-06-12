@@ -17,7 +17,7 @@ import java.net.URI
 
 
 @Component
-class UserUtils {
+class SessionUtils {
 
     @Value("\${AUTH_HOST}")
     private val authHost: String = "localhost"
