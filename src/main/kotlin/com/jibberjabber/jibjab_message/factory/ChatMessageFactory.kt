@@ -4,7 +4,7 @@ import com.jibberjabber.jibjab_message.domain.ChatMessage
 import com.jibberjabber.jibjab_message.domain.MessageStatus
 import com.jibberjabber.jibjab_message.dto.CreationChatMessageDto
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
+import java.util.*
 
 @Component
 class ChatMessageFactory : AbstractFactory<ChatMessage, CreationChatMessageDto> {
@@ -14,7 +14,7 @@ class ChatMessageFactory : AbstractFactory<ChatMessage, CreationChatMessageDto> 
     }
 
     fun from(input: CreationChatMessageDto, chatId: String, status: MessageStatus): ChatMessage {
-        return ChatMessage(chatId, input.senderId, input.recipientId, input.content, LocalDateTime.now(), status)
+        return ChatMessage(chatId, input.senderId, input.recipientId, input.content, Date(), status)
     }
 
 }

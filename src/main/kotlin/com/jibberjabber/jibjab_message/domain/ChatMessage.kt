@@ -19,14 +19,14 @@ class ChatRoom(
 @Entity
 @Table(name = "chat_message")
 class ChatMessage(
-    var chatId: String,
+    var chatId: String? = null,
     var senderId: String,
     var recipientId: String,
     var content: String,
     @CreationTimestamp
-    var timestamp: LocalDateTime,
+    var timestamp: Date? = null,
     @Enumerated(value = EnumType.STRING)
-    var status: MessageStatus
+    var status: MessageStatus? = null
 ) : AbstractEntity()
 
 //@Entity

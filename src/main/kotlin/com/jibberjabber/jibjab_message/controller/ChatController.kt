@@ -1,7 +1,7 @@
 package com.jibberjabber.jibjab_message.controller
 
 import com.jibberjabber.jibjab_message.domain.ChatMessage
-import com.jibberjabber.jibjab_message.dto.CreationChatMessageDto
+import com.jibberjabber.jibjab_message.factory.ChatMessageFactory
 import com.jibberjabber.jibjab_message.service.ChatMessageService
 import com.jibberjabber.jibjab_message.service.ChatRoomService
 import com.jibberjabber.jibjab_message.utils.SessionUtils
@@ -20,22 +20,25 @@ class ChatController @Autowired constructor(
     val messagingTemplate: SimpMessagingTemplate,
     val chatMessageService: ChatMessageService,
     val chatRoomService: ChatRoomService,
-    val sessionUtils: SessionUtils
+    val sessionUtils: SessionUtils,
+    val chatMessageFactory: ChatMessageFactory
 ) {
 
     @MessageMapping("/chat")
-    fun processMessage(@Payload messageDto: ChatMessage) {
-        val chatId = chatRoomService.getChatId(messageDto.senderId, messageDto.recipientId, true)
-        val saved: ChatMessage = chatMessageService.save(
-            CreationChatMessageDto(
-                messageDto.senderId,
-                messageDto.recipientId,
-                messageDto.content
-            ), chatId
-        )
-        messagingTemplate.convertAndSendToUser(messageDto.recipientId, "/queue/messages", saved)
-        messagingTemplate.convertAndSendToUser(messageDto.senderId, "/queue/messages", saved)
+    fun processMessage(@Payload chatMessage: ChatMessage) {
+        val chatId = chatRoomService.getChatId(chatMessage.senderId, chatMessage.recipientId, true)
+        val saved: ChatMessage = chatMessageService.save(chatMessageFactory.convert(chatMessage), chatId)
+        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/messages", saved)
+        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/messages", saved)
     }
+
+//    @MessageMapping("/read")
+//    fun processReadChat(@Payload chatMessage: ChatMessage) {
+//        val user = sessionUtils.getTokenUserInformation()
+//        chatMessageService.markMessageAsRead(chatMessage)
+//        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/messages", saved)
+//        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/messages", saved)
+//    }
 
     @GetMapping("/messages/{userId}/count")
     fun countNewMessages(@PathVariable userId: String): ResponseEntity<Long> {
