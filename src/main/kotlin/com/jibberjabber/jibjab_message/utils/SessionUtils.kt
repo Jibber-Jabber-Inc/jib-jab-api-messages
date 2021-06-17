@@ -34,7 +34,7 @@ class SessionUtils {
 
     fun getUserInfoFromId(userId: String): UserInfoDto? {
         val restTemplate = RestTemplate()
-        val getUserUrl = "http://$authHost:$authPort/api/user/users/info/$userId"
+        val getUserUrl = "https://$authHost:$authPort/api/user/users/info/$userId"
         logger.info("Authenticating with: $getUserUrl")
         val getUserUri = URI(getUserUrl)
         val headers = HttpHeaders()
