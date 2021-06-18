@@ -35,8 +35,8 @@ class ChatMessageService @Autowired constructor(
         val chatId: String? = chatRoomService.getChatId(senderId, recipientId, false)
         val messages = if (chatId != null) chatMessageRepository.findByChatId(chatId) else listOf()
         return if (messages.isNotEmpty()) {
-            chatMessageRepository.updateStatuses(senderId, recipientId, MessageStatus.READ)
-            chatMessageRepository.findByChatId(chatId!!)
+            messages.forEach { m -> m.status = MessageStatus.READ }
+            chatMessageRepository.saveAll(messages)
         } else
             messages
     }
