@@ -33,12 +33,7 @@ class ChatMessageService @Autowired constructor(
 
     fun findChatMessages(senderId: String, recipientId: String): List<ChatMessage> {
         val chatId: String? = chatRoomService.getChatId(senderId, recipientId, false)
-        val messages = if (chatId != null) chatMessageRepository.findByChatId(chatId) else listOf()
-        return if (messages.isNotEmpty()) {
-            messages.forEach { m -> if (m.senderId == senderId) m.status = MessageStatus.READ }
-            chatMessageRepository.saveAll(messages)
-        } else
-            messages
+        return if (chatId != null) chatMessageRepository.findByChatId(chatId) else listOf()
     }
 
     fun markMessageAsRead(messageId: String) {
