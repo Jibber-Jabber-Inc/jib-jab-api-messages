@@ -52,7 +52,8 @@ class ChatController @Autowired constructor(
     @GetMapping("/messages/{userId}")
     fun findChatMessages(@PathVariable userId: String): ResponseEntity<*> {
         val user = sessionUtils.getTokenUserInformation()
-        return ResponseEntity.ok(chatMessageService.findChatMessages(userId, user.id))
+        return ResponseEntity.ok(
+            chatMessageService.findChatMessages(userId, user.id).sortedByDescending { it.timestamp })
     }
 
 //    @GetMapping("/messages/{id}")
