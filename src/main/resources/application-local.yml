@@ -8,7 +8,7 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     database: postgresql
     show-sql: true
     generate-ddl: true
