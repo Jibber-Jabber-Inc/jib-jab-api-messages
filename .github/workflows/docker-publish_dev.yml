@@ -58,7 +58,7 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           REPO_OWNER: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.VM_GITHUB_TOKEN }}
         with:
           username: ${{ secrets.VM_USERNAME }}
           host: ${{ secrets.VM_PUBLIC_IP_DEV }}
