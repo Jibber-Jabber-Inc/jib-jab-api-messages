@@ -38,8 +38,9 @@ class ChatController @Autowired constructor(
         val chatMessage = chatMessageService.getChatMessage(chatMessageRead.messageId)
         print("chatMessage $chatMessage")
         chatMessageService.markMessageAsRead(chatMessage.id!!)
-        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/read", chatMessage)
-        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/read", chatMessage)
+        val saved = chatMessageService.getChatMessage(chatMessageRead.messageId)
+        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/read", saved)
+        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/read", saved)
     }
 
     @GetMapping("/messages/{userId}/count")
