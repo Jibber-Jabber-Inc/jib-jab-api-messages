@@ -16,7 +16,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     private val clientUrl: String = "http://localhost:3000"
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/ws").setAllowedOrigins(clientUrl).withSockJS()
+        registry.addEndpoint("/ws").withSockJS()
     }
 
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
