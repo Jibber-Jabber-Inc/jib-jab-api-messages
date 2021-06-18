@@ -69,6 +69,9 @@ jobs:
             sudo git checkout origin/without-cert-bot
             sudo git pull
             sudo aa-remove-unknown
+            sudo docker container kill $(sudo docker ps -q)
+            sudo docker rm $(sudo docker ps -a -q)
+            sudo docker rmi $(sudo docker images -q)
             sudo docker login docker.pkg.github.com --username $REPO_OWNER --password $GITHUB_TOKEN
             sudo docker-compose -f docker-compose.dev.vm.yml pull
             sudo docker-compose -f docker-compose.dev.vm.yml up -d --build
