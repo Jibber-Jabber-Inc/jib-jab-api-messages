@@ -43,13 +43,13 @@ class ChatController @Autowired constructor(
         messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/read", saved)
     }
 
-    @GetMapping("/messages/{userId}/count")
+    @GetMapping("/api/message/messages/{userId}/count")
     fun countNewMessages(@PathVariable userId: String): ResponseEntity<Long> {
         val user = sessionUtils.getTokenUserInformation()
         return ResponseEntity.ok(chatMessageService.countNewMessages(userId, user.id))
     }
 
-    @GetMapping("/messages/{userId}")
+    @GetMapping("/api/message/messages/{userId}")
     fun findChatMessages(@PathVariable userId: String): ResponseEntity<*> {
         val user = sessionUtils.getTokenUserInformation()
         return ResponseEntity.ok(chatMessageService.findChatMessages(userId, user.id).sortedBy { it.timestamp })

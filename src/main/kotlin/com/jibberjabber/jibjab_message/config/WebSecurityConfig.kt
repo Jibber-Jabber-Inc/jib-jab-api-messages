@@ -33,6 +33,10 @@ class WebSecurityConfig
         http
             .csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests().antMatchers("/ws/**").permitAll()
+            // SWAGGER CONFIG
+            .antMatchers("/v3/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui","/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .anyRequest().authenticated().and()
             .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .headers().xssProtection().and().contentSecurityPolicy("script-src 'self'")
     }

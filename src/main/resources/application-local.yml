@@ -1,8 +1,6 @@
 server:
   error:
     include-message: always
-  servlet:
-    context-path: /api/message
   port: 8082
 
 spring:
