@@ -66,7 +66,9 @@ jobs:
           envs: REPO_OWNER, GITHUB_TOKEN
           script: |
             cd jib-jab-infra
+            sudo git checkout origin/without-cert-bot
+            sudo git pull
             sudo aa-remove-unknown
             sudo docker login docker.pkg.github.com --username $REPO_OWNER --password $GITHUB_TOKEN
-            sudo docker-compose -f docker-compose.yml pull
-            sudo docker-compose -f docker-compose.yml up -d --build
+            sudo docker-compose -f docker-compose.dev.vm.yml pull
+            sudo docker-compose -f docker-compose.dev.vm.yml up -d --build
