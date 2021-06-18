@@ -1,0 +1,77 @@
+name: Docker publish
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - develop
+
+env:
+  IMAGE_NAME: jibjab_messages
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from BRANCH_NAME
+          BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && BRANCH_NAME=$(echo $BRANCH_NAME | sed -e 's/^v//')
+
+          [ "$BRANCH_NAME" == "master" ] && BRANCH_NAME=production
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo BRANCH_NAME=$BRANCH_NAME
+
+          docker tag $IMAGE_NAME $IMAGE_ID-$BRANCH_NAME:latest
+          docker push $IMAGE_ID-$BRANCH_NAME:latest
+  azure-deploy:
+    needs: push
+    name: Deploy to Azure VM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connecting with SSH to Azure VM
+        uses: appleboy/ssh-action@master
+        env:
+          REPO_OWNER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.VM_GITHUB_TOKEN }}
+        with:
+          username: ${{ secrets.VM_USERNAME }}
+          host: ${{ secrets.VM_PUBLIC_IP_DEV }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY_DEV }}
+          envs: REPO_OWNER, GITHUB_TOKEN
+          script: |
+            cd jib-jab-infra
+            sudo git checkout origin/without-cert-bot
+            sudo git pull
+            sudo aa-remove-unknown
+            sudo docker container kill $(sudo docker ps -q)
+            sudo docker rm $(sudo docker ps -a -q)
+            sudo docker rmi $(sudo docker images -q)
+            sudo docker login docker.pkg.github.com --username $REPO_OWNER --password $GITHUB_TOKEN
+            sudo docker-compose -f docker-compose.dev.vm.yml pull
+            sudo docker-compose -f docker-compose.dev.vm.yml up -d --build
