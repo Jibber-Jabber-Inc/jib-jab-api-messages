@@ -34,8 +34,10 @@ class ChatMessageService @Autowired constructor(
     fun findChatMessages(senderId: String, recipientId: String): List<ChatMessage> {
         val chatId: String? = chatRoomService.getChatId(senderId, recipientId, false)
         val messages = if (chatId != null) chatMessageRepository.findByChatId(chatId) else listOf()
-        if (messages.isNotEmpty())
+        if (messages.isNotEmpty()) {
             chatMessageRepository.updateStatuses(senderId, recipientId, MessageStatus.READ)
+            return chatMessageRepository.findByChatId(chatId!!)
+        }
         return messages
     }
 
