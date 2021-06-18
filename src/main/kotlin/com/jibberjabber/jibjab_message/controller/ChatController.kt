@@ -36,6 +36,7 @@ class ChatController @Autowired constructor(
     @MessageMapping("/read")
     fun processReadChat(@Payload chatMessageRead: ChatMessageReadDto) {
         val chatMessage = chatMessageService.getChatMessage(chatMessageRead.messageId)
+        print("chatMessage $chatMessage")
         chatMessageService.markMessageAsRead(chatMessage.id!!)
         messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/read", chatMessage)
         messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/read", chatMessage)

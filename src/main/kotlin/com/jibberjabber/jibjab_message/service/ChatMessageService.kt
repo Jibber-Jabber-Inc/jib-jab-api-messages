@@ -3,6 +3,7 @@ package com.jibberjabber.jibjab_message.service
 import com.jibberjabber.jibjab_message.domain.ChatMessage
 import com.jibberjabber.jibjab_message.domain.MessageStatus
 import com.jibberjabber.jibjab_message.dto.CreationChatMessageDto
+import com.jibberjabber.jibjab_message.exception.NotFoundException
 import com.jibberjabber.jibjab_message.factory.ChatMessageFactory
 import com.jibberjabber.jibjab_message.repository.ChatMessageRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +22,7 @@ class ChatMessageService @Autowired constructor(
     }
 
     fun getChatMessage(messageId: String): ChatMessage {
-        return chatMessageRepository.getOne(messageId)
+        return chatMessageRepository.findById(messageId).orElseThrow { NotFoundException("Chat message not found") }
     }
 
     fun countNewMessages(senderId: String, recipientId: String): Long {

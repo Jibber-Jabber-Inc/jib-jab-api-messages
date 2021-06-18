@@ -5,6 +5,7 @@ import com.jibberjabber.jibjab_message.domain.MessageStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import java.util.*
 import javax.transaction.Transactional
 
 interface ChatMessageRepository : JpaRepository<ChatMessage, String> {
@@ -20,4 +21,6 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, String> {
     @Modifying
     @Transactional
     fun updateStatus(senderId: String, delivered: MessageStatus)
+
+    override fun findById(id: String): Optional<ChatMessage>
 }
