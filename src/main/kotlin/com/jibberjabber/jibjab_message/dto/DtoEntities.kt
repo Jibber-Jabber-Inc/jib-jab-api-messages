@@ -15,3 +15,7 @@ data class CreationChatMessageDto(
     var recipientId: String,
     var content: String,
 )
+
+data class ChatMessageReadDto(
+    var messageId: String
+)

@@ -1,6 +1,7 @@
 package com.jibberjabber.jibjab_message.controller
 
 import com.jibberjabber.jibjab_message.domain.ChatMessage
+import com.jibberjabber.jibjab_message.dto.ChatMessageReadDto
 import com.jibberjabber.jibjab_message.factory.ChatMessageFactory
 import com.jibberjabber.jibjab_message.service.ChatMessageService
 import com.jibberjabber.jibjab_message.service.ChatRoomService
@@ -32,13 +33,13 @@ class ChatController @Autowired constructor(
         messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/messages", saved)
     }
 
-//    @MessageMapping("/read")
-//    fun processReadChat(@Payload chatMessage: ChatMessage) {
-//        val user = sessionUtils.getTokenUserInformation()
-//        chatMessageService.markMessageAsRead(chatMessage)
-//        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/messages", saved)
-//        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/messages", saved)
-//    }
+    @MessageMapping("/read")
+    fun processReadChat(@Payload chatMessageRead: ChatMessageReadDto) {
+        val chatMessage = chatMessageService.getChatMessage(chatMessageRead.messageId)
+        chatMessageService.markMessageAsRead(chatMessage.id!!)
+        messagingTemplate.convertAndSendToUser(chatMessage.recipientId, "/queue/read", chatMessage)
+        messagingTemplate.convertAndSendToUser(chatMessage.senderId, "/queue/read", chatMessage)
+    }
 
     @GetMapping("/messages/{userId}/count")
     fun countNewMessages(@PathVariable userId: String): ResponseEntity<Long> {

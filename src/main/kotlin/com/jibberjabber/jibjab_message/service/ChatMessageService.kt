@@ -20,6 +20,10 @@ class ChatMessageService @Autowired constructor(
         return chatMessageRepository.save(chatMessage)
     }
 
+    fun getChatMessage(messageId: String): ChatMessage {
+        return chatMessageRepository.getOne(messageId)
+    }
+
     fun countNewMessages(senderId: String, recipientId: String): Long {
         return chatMessageRepository.countBySenderIdAndRecipientIdAndStatus(
             senderId, recipientId, MessageStatus.RECEIVED
@@ -32,6 +36,10 @@ class ChatMessageService @Autowired constructor(
         if (messages.isNotEmpty())
             chatMessageRepository.updateStatuses(senderId, recipientId, MessageStatus.READ)
         return messages
+    }
+
+    fun markMessageAsRead(messageId: String) {
+        chatMessageRepository.updateStatus(messageId, MessageStatus.READ)
     }
 
 }

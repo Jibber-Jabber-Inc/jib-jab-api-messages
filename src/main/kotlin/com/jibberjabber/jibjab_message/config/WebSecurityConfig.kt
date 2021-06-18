@@ -53,23 +53,23 @@ class WebSecurityConfig
 //    }
 //}
 
-@Configuration
-class SecurityConfig {
-    @Bean
-    fun corsFilter(): CorsFilter {
-        val source = UrlBasedCorsConfigurationSource()
-        val config = CorsConfiguration()
-        config.allowCredentials = true
-        config.addAllowedOrigin("http://localhost:3000")
-        config.addAllowedHeader("*")
-        config.addAllowedMethod("OPTIONS")
-        config.addAllowedMethod("HEAD")
-        config.addAllowedMethod("GET")
-        config.addAllowedMethod("PUT")
-        config.addAllowedMethod("POST")
-        config.addAllowedMethod("DELETE")
-        config.addAllowedMethod("PATCH")
-        source.registerCorsConfiguration("/**", config)
-        return CorsFilter(source)
-    }
-}
+//@Configuration
+//class SecurityConfig {
+//    @Bean
+//    fun corsFilter(): CorsFilter {
+//        val source = UrlBasedCorsConfigurationSource()
+//        val config = CorsConfiguration()
+//        config.allowCredentials = true
+//        config.addAllowedOrigin("http://localhost:3000")
+//        config.addAllowedHeader("*")
+//        config.addAllowedMethod("OPTIONS")
+//        config.addAllowedMethod("HEAD")
+//        config.addAllowedMethod("GET")
+//        config.addAllowedMethod("PUT")
+//        config.addAllowedMethod("POST")
+//        config.addAllowedMethod("DELETE")
+//        config.addAllowedMethod("PATCH")
+//        source.registerCorsConfiguration("/**", config)
+//        return CorsFilter(source)
+//    }
+//}

@@ -15,4 +15,9 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, String> {
     @Modifying
     @Transactional
     fun updateStatuses(senderId: String, recipientId: String, delivered: MessageStatus)
+
+    @Query("update ChatMessage set status = ?2 where id = ?1")
+    @Modifying
+    @Transactional
+    fun updateStatus(senderId: String, delivered: MessageStatus)
 }
