@@ -2,6 +2,7 @@ server:
   error:
     include-message: always
   port: 8080
+  forward-headers-strategy: native
 
 spring:
   jpa:
