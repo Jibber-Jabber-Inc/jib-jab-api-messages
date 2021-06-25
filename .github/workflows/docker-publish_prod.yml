@@ -73,5 +73,4 @@ jobs:
             sudo docker rm $(sudo docker ps -a -q)
             sudo docker rmi $(sudo docker images -q)
             sudo docker login docker.pkg.github.com --username $REPO_OWNER --password $GITHUB_TOKEN
-            sudo docker-compose -f docker-compose.prod.vm.yml pull
-            sudo docker-compose -f docker-compose.prod.vm.yml up -d --buil
+            sudo docker-compose -f docker-compose.prod.vm.yml up -d --force-recreate --build
