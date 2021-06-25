@@ -17,7 +17,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/ws")
-            .setAllowedOrigins("http://localhost:3000", "http://revproxy").withSockJS()
+            .setAllowedOriginPatterns("http://localhost:3000", "http://revproxy").withSockJS()
     }
 
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
